@@ -1,3 +1,4 @@
+import Avatar from "@/src/components/Avatar";
 import { supabase } from "@/src/lib/supabase";
 import { useAuth } from "@/src/providers/AuthProvider";
 import { useState, useEffect } from "react";
@@ -87,7 +88,7 @@ export default function ProfileScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={{ alignItems: "center" }}>
-        {/* <Avatar
+        <Avatar
           size={200}
           url={avatarUrl}
           onUpload={(url: string) => {
@@ -99,7 +100,7 @@ export default function ProfileScreen() {
               full_name: fullName,
             });
           }}
-        /> */}
+        />
       </View>
 
       <View style={[styles.verticallySpaced, styles.mt20]}>
@@ -152,7 +153,8 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     marginTop: 40,
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingBottom: 50,
   },
   verticallySpaced: {
     paddingTop: 4,
