@@ -1,12 +1,12 @@
 import { Redirect, Stack } from "expo-router";
-// import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from "../../providers/AuthProvider";
 
 export default function AuthLayout() {
-  // const { user } = useAuth();
+  const { user } = useAuth();
 
-  // if (user) {
-  //   return <Redirect href="/(home)" />;
-  // }
+  if (user) {
+    return <Redirect href="/(home)/(tabs)" />;
+  }
 
   return <Stack />;
 }

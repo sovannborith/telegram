@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 // import AuthProvider from "../providers/AuthProvider";
 import { useEffect } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
+import AuthProvider from "../providers/AuthProvider";
 
 export default function RootLayout() {
   // useEffect(() => {
@@ -21,7 +22,9 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Slot />
+      <AuthProvider>
+        <Slot />
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 }

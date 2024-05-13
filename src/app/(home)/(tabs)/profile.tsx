@@ -1,13 +1,11 @@
+import { supabase } from "@/src/lib/supabase";
+import { useAuth } from "@/src/providers/AuthProvider";
 import { useState, useEffect } from "react";
-// import { supabase } from '../../../lib/supabase';
 import { StyleSheet, View, Alert, ScrollView } from "react-native";
 import { Button, Input } from "react-native-elements";
-// import { Session } from '@supabase/supabase-js';
-// import { useAuth } from '../../../providers/AuthProvider';
-// import Avatar from '../../../components/Avatar';
 
 export default function ProfileScreen() {
-  // const { session } = useAuth();
+  const { session } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
@@ -15,76 +13,76 @@ export default function ProfileScreen() {
   const [website, setWebsite] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
 
-  // useEffect(() => {
-  //   if (session) getProfile();
-  // }, [session]);
+  useEffect(() => {
+    if (session) getProfile();
+  }, [session]);
 
-  // async function getProfile() {
-  //   try {
-  //     setLoading(true);
-  //     if (!session?.user) throw new Error('No user on the session!');
+  async function getProfile() {
+    try {
+      setLoading(true);
+      if (!session?.user) throw new Error("No user on the session!");
 
-  //     const { data, error, status } = await supabase
-  //       .from('profiles')
-  //       .select(`username, website, avatar_url, full_name`)
-  //       .eq('id', session?.user.id)
-  //       .single();
-  //     if (error && status !== 406) {
-  //       throw error;
-  //     }
+      const { data, error, status } = await supabase
+        .from("profiles")
+        .select(`username, website, avatar_url, full_name`)
+        .eq("id", session?.user.id)
+        .single();
+      if (error && status !== 406) {
+        throw error;
+      }
 
-  //     if (data) {
-  //       setUsername(data.username);
-  //       setWebsite(data.website);
-  //       setAvatarUrl(data.avatar_url);
-  //       setFullname(data.full_name);
-  //     }
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       Alert.alert(error.message);
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
+      if (data) {
+        setUsername(data.username);
+        setWebsite(data.website);
+        setAvatarUrl(data.avatar_url);
+        setFullname(data.full_name);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  // async function updateProfile({
-  //   username,
-  //   website,
-  //   avatar_url,
-  //   full_name,
-  // }: {
-  //   username: string;
-  //   website: string;
-  //   avatar_url: string;
-  //   full_name: string;
-  // }) {
-  //   try {
-  //     setLoading(true);
-  //     if (!session?.user) throw new Error('No user on the session!');
+  async function updateProfile({
+    username,
+    website,
+    avatar_url,
+    full_name,
+  }: {
+    username: string;
+    website: string;
+    avatar_url: string;
+    full_name: string;
+  }) {
+    try {
+      setLoading(true);
+      if (!session?.user) throw new Error("No user on the session!");
 
-  //     const updates = {
-  //       id: session?.user.id,
-  //       username,
-  //       website,
-  //       avatar_url,
-  //       full_name,
-  //       updated_at: new Date(),
-  //     };
+      const updates = {
+        id: session?.user.id,
+        username,
+        website,
+        avatar_url,
+        full_name,
+        updated_at: new Date(),
+      };
 
-  //     const { error } = await supabase.from('profiles').upsert(updates);
+      const { error } = await supabase.from("profiles").upsert(updates);
 
-  //     if (error) {
-  //       throw error;
-  //     }
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       Alert.alert(error.message);
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -132,20 +130,20 @@ export default function ProfileScreen() {
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
           title={loading ? "Loading ..." : "Update"}
-          // onPress={() =>
-          //   updateProfile({
-          //     username,
-          //     website,
-          //     avatar_url: avatarUrl,
-          //     full_name: fullName,
-          //   })
-          // }
+          onPress={() =>
+            updateProfile({
+              username,
+              website,
+              avatar_url: avatarUrl,
+              full_name: fullName,
+            })
+          }
           disabled={loading}
         />
       </View>
 
       <View style={styles.verticallySpaced}>
-        <Button title="Sign Out" onPress={() => null} />
+        <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
       </View>
     </ScrollView>
   );
