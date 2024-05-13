@@ -1,12 +1,9 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import { View, Text } from "react-native";
+import React from "react";
+import { ChannelList } from "stream-chat-expo";
 
 const index = () => {
-  return (
-    <View>
-      <Text>index</Text>
-    </View>
-  );
+  return <ChannelList />;
 };
 
 export default index;
