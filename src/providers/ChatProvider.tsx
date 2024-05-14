@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { StreamChat } from "stream-chat";
 import { Chat, OverlayProvider } from "stream-chat-expo";
 import { useAuth } from "./AuthProvider";
@@ -14,37 +14,39 @@ export default function ChatProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (!profile) return;
-    const connect = async () => {
-      await client.connectUser(
-        {
-          id: profile?.id,
-          name: profile?.full_name,
-          image: supabase.storage
-            .from("avatars")
-            .getPublicUrl(profile.avatar_url).data.publicUrl,
-        },
-        tokenProvider
-      );
-      setIsReady(true);
-      // const channel = client.channel("messaging", "the_park", {
-      //   name: "The Park",
-      // });
+    try {
+      const connect = async () => {
+        await client.connectUser(
+          {
+            id: profile?.id,
+            name: profile?.full_name,
+            image: supabase.storage
+              .from("avatars")
+              .getPublicUrl(profile.avatar_url).data.publicUrl,
+          },
+          tokenProvider
+        );
+        setIsReady(true);
+      };
+      connect();
 
-      // await channel.watch();
-    };
-
-    connect();
-
-    return () => {
-      if (isReady) {
-        client.disconnectUser();
-      }
-      setIsReady(false);
-    };
+      return () => {
+        if (isReady) {
+          client.disconnectUser();
+        }
+        setIsReady(false);
+      };
+    } catch (err) {
+      console.log(err);
+    }
   }, [profile?.id]);
 
   if (!isReady) {
-    return <ActivityIndicator />;
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
   }
 
   return (

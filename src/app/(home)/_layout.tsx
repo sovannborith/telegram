@@ -5,8 +5,6 @@ import { StreamChat } from "stream-chat";
 import ChatProvider from "@/src/providers/ChatProvider";
 import { useAuth } from "@/src/providers/AuthProvider";
 
-const client = StreamChat.getInstance(process.env.EXPO_PUBLIC_STREAM_API_KEY!);
-
 export default function HomeLayout() {
   const { user } = useAuth();
 

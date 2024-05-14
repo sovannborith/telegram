@@ -4,44 +4,40 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 /// <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
-
-import { StreamChat } from 'npm:stream-chat';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-console.log("Hello from Functions!")
+import { StreamChat } from "npm:stream-chat";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 Deno.serve(async (req) => {
-
-  const authHeader = req.headers.get('Authorization')!
+  const authHeader = req.headers.get("Authorization")!;
   const supabaseClient = createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-    { global: { headers: { Authorization: authHeader } } }
-  )
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    { global: { headers: { Authorization: authHeader } } },
+  );
 
   // Get the session or user object
-  const authToken = authHeader.replace('Bearer ', '');
+  const authToken = authHeader.replace("Bearer ", "");
   const { data } = await supabaseClient.auth.getUser(authToken);
   const user = data.user;
-
-  if(!user){
+  if (!user) {
     return new Response(
-      JSON.stringify({error: "User not found"}),
-      { headers: { "Content-Type": "application/json" } }
-    )
+      JSON.stringify({ error: "User not found" }),
+      { headers: { "Content-Type": "application/json" } },
+    );
   }
 
   const serverClient = StreamChat.getInstance(
-    Deno.env.get('STREAM_API_KEY'),
-    Deno.env.get('STREAM_API_SECRET'));
+    Deno.env.get("STREAM_API_KEY"),
+    Deno.env.get("STREAM_API_SECRET"),
+  );
 
-  // generate a token for the user with id 'john'
   const token = serverClient.createToken(user.id);
+
   return new Response(
-    JSON.stringify(token),
+    JSON.stringify({ token }),
     { headers: { "Content-Type": "application/json" } },
-  )
-})
+  );
+});
 
 /* To invoke locally:
 
